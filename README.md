@@ -53,7 +53,7 @@ Pin assignments, timing parameters, and resolution are all defined in `board_ini
    location characteristic updates config in NVS and triggers a reconnect / re-fetch
    immediately, without a reboot.
 
-### BLE provisioning payloads
+## BLE provisioning payloads
 
 Write these as UTF-8 JSON to the relevant characteristic (curly quotes from mobile
 keyboards are auto-normalized to straight quotes):
@@ -68,7 +68,7 @@ keyboards are auto-normalized to straight quotes):
 
 Service UUID: `4fafc201-1fb5-459e-8fcc-c5c9c331914b`
 
-### Weather icon mapping
+## Weather icon mapping
 
 `ui.c` draws small icons directly with LVGL primitives (circles + lines) — no image or
 custom font assets required. `api.h` buckets the raw OpenWeatherMap condition code into
@@ -122,3 +122,7 @@ idf.py -p <PORT> flash monitor
   with untrusted BLE proximity.
 - The weather fetch interval is manual (BLE-triggered or on Wi-Fi reconnect) — there's no
   periodic re-fetch timer yet if you want the display to refresh automatically over time.
+
+
+ ## Videos and Images : 
+  https://github.com/ChanchalKumari1/ESP32-Smart-Weather-Display
