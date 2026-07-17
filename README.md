@@ -51,7 +51,7 @@ The application is used to:
    location characteristic updates config in NVS and triggers a reconnect / re-fetch
    immediately, without a reboot.
 
-### BLE provisioning payloads
+## BLE provisioning payloads
 
 Write these as UTF-8 JSON to the relevant characteristic (curly quotes from mobile
 keyboards are auto-normalized to straight quotes):
@@ -66,7 +66,7 @@ keyboards are auto-normalized to straight quotes):
 
 Service UUID: `4fafc201-1fb5-459e-8fcc-c5c9c331914b`
 
-### Weather icon mapping
+## Weather icon mapping
 
 `ui.c` draws small icons directly with LVGL primitives (circles + lines) — no image or
 custom font assets required. `api.h` buckets the raw OpenWeatherMap condition code into
@@ -84,7 +84,7 @@ graphic:
 | 13 | Snow | Cloud + snowflake dots |
 | 50 | Mist | Horizontal haze lines |
 
-### Configuration
+## Configuration
 
 Edit `defines.h` before building:
 
@@ -98,7 +98,7 @@ Edit `defines.h` before building:
 > repo is or will be public, rotate the key and load it from NVS, `menuconfig`, or a
 > gitignored header instead.
 
-### Building
+## Building
 
 Standard ESP-IDF project layout is assumed (this README doesn't include `CMakeLists.txt` /
 `sdkconfig`, which should already exist in your IDF project structure).
@@ -110,7 +110,7 @@ idf.py build
 idf.py -p <PORT> flash monitor
 
 
-### Displayed Information
+## Displayed Information
 
 * Current temperature
 * Feels-like temperature
@@ -124,7 +124,7 @@ idf.py -p <PORT> flash monitor
 * Weather icon
 * Wi-Fi connection status
 
-### Software Components
+## Software Components
 
 * ESP-IDF
 * FreeRTOS
@@ -137,7 +137,7 @@ idf.py -p <PORT> flash monitor
 * LVGL
 * OpenWeather API
 
-### Hardware
+## Hardware
 
 * Elecrow ESP32 display
 * Integrated ESP32 microcontroller
@@ -145,7 +145,7 @@ idf.py -p <PORT> flash monitor
 * Bluetooth Low Energy
 * USB power supply
 
-### Applications
+## Applications
 
 * Smart desk weather display
 * Home weather dashboard
@@ -155,7 +155,7 @@ idf.py -p <PORT> flash monitor
 * BLE and Wi-Fi IoT demonstration
 * Embedded graphical-interface development
 
-### Future Improvements
+## Future Improvements
 
 * Multi-day weather forecast
 * Sunrise and sunset information
