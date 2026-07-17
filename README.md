@@ -7,7 +7,7 @@ needed to point it at a new network or city.
 
 The project retrieves live weather information from the OpenWeather API and displays it on an Elecrow ESP32 touchscreen display.
 
-Wi-Fi credentials, latitude, and longitude are configured wirelessly using the BLE WiFi Setup – IoT Devices mobile application. The application communicates with the ESP32 through Bluetooth Low Energy, removing the need to hardcode Wi-Fi or location information in the firmware.
+Wi-Fi credentials, latitude, and longitude are configured wirelessly using the ** BLE WiFi Setup – IoT Devices mobile application**. The application communicates with the ESP32 through Bluetooth Low Energy, removing the need to hardcode Wi-Fi or location information in the firmware.
 
 ## Features
 
