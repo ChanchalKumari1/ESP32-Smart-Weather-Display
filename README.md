@@ -1,11 +1,9 @@
-# ESP32-Smart-Weather-Display - ELECROW ESP32 display-4.3 Inch based
-ELECROW ESP32 display-4.3 Inch HMI Display 480x272 RGB TFT LCD Touch Screen Compatible with Arduino/LVGL/PlatformIO/ Micropython Without Acrylic Case
+# ESP32 BLE Weather Station
 
-# ESP32 Smart Weather Display
-
-An ESP32-based smart weather dashboard developed using the **ESP-IDF framework**. The project retrieves live weather information from the OpenWeather API and displays it on an Elecrow ESP32 touchscreen display.
-
-Wi-Fi credentials, latitude, and longitude are configured wirelessly using the **BLE WiFi Setup – IoT Devices** mobile application. The application communicates with the ESP32 through Bluetooth Low Energy, removing the need to hardcode Wi-Fi or location information in the firmware.
+An ESP32-S3 firmware project (ESP-IDF) that drives a 480x272 RGB LCD ("CrowPanel 4.3\"") with a
+resistive touch panel, fetches live weather from OpenWeatherMap over Wi-Fi, and lets a phone
+configure Wi-Fi credentials and location over Bluetooth LE — no serial console or reflashing
+needed to point it at a new network or city.
 
 ## Features
 
@@ -21,22 +19,26 @@ Wi-Fi credentials, latitude, and longitude are configured wirelessly using the *
 - **Resistive touch** — bit-banged XPT2046 SPI driver feeding LVGL's input device layer
   (currently wired up but the UI has no interactive controls yet).
 
-## Mobile Configuration Application
+## Hardware
 
-This project uses the following iOS application:
+- ESP32-S3 with PSRAM (frame buffer lives in PSRAM)
+- 480x272 RGB parallel LCD (16-bit RGB565 bus)
+- XPT2046 resistive touch controller, sharing the SD card SPI bus
+- PWM-controlled backlight
 
-**BLE WiFi Setup – IoT Devices**
+Pin assignments, timing parameters, and resolution are all defined in `board_init.h`.
 
-The application is used to:
+## Project Layout
 
-* Scan for the ESP32 BLE device
-* Connect to the ESP32
-* Select a Wi-Fi network
-* Send the Wi-Fi SSID
-* Send the Wi-Fi password
-* Send latitude and longitude
-* Send additional configuration data
-* Reconfigure the device without reflashing the firmware
+| File | Purpose |
+|---|---|
+| `main.c` | App entry point (`app_main`), NVS-backed config load/save, task bring-up |
+| `defines.h` | Shared includes, constants, `weather_data_t` / `app_config_t` structs, function prototypes |
+| `board_init.c` / `board_init.h` | LCD panel + backlight + touch + LVGL driver bring-up, pin map |
+| `wifi.h` | Wi-Fi station init, event handling, reconnect, DNS setup |
+| `api.h` | OpenWeatherMap HTTP client (async fetch task, JSON parsing into `weather_data_t`) |
+| `ble.h` | NimBLE GATT server: Wi-Fi and location provisioning characteristics |
+| `ui.c` / `ui.h` | LVGL weather card UI, including the vector weather icon renderer |
 
 ## How It Works
 
@@ -51,7 +53,7 @@ The application is used to:
    location characteristic updates config in NVS and triggers a reconnect / re-fetch
    immediately, without a reboot.
 
-## BLE provisioning payloads
+### BLE provisioning payloads
 
 Write these as UTF-8 JSON to the relevant characteristic (curly quotes from mobile
 keyboards are auto-normalized to straight quotes):
@@ -66,7 +68,7 @@ keyboards are auto-normalized to straight quotes):
 
 Service UUID: `4fafc201-1fb5-459e-8fcc-c5c9c331914b`
 
-## Weather icon mapping
+### Weather icon mapping
 
 `ui.c` draws small icons directly with LVGL primitives (circles + lines) — no image or
 custom font assets required. `api.h` buckets the raw OpenWeatherMap condition code into
@@ -108,67 +110,15 @@ idf.py set-target esp32s3
 idf.py menuconfig   # configure PSRAM, partition table, etc. if not already set
 idf.py build
 idf.py -p <PORT> flash monitor
+```
 
+## Known Limitations / Ideas for Follow-up
 
-## Displayed Information
-
-* Current temperature
-* Feels-like temperature
-* Minimum and maximum temperature
-* Weather condition
-* Weather description
-* Humidity
-* Atmospheric pressure
-* Wind speed
-* City or location name
-* Weather icon
-* Wi-Fi connection status
-
-## Software Components
-
-* ESP-IDF
-* FreeRTOS
-* ESP-IDF Wi-Fi
-* ESP-IDF Bluetooth Low Energy
-* ESP HTTP Client
-* ESP TLS
-* cJSON
-* NVS Flash
-* LVGL
-* OpenWeather API
-
-## Hardware
-
-* Elecrow ESP32 display
-* Integrated ESP32 microcontroller
-* Wi-Fi connectivity
-* Bluetooth Low Energy
-* USB power supply
-
-## Applications
-
-* Smart desk weather display
-* Home weather dashboard
-* Office information display
-* ESP-IDF BLE provisioning example
-* OpenWeather API integration example
-* BLE and Wi-Fi IoT demonstration
-* Embedded graphical-interface development
-
-## Future Improvements
-
-* Multi-day weather forecast
-* Sunrise and sunset information
-* Air Quality Index
-* UV index
-* NTP date and time
-* Weather alerts
-* Touchscreen configuration
-* Indoor temperature and humidity sensors
-
-### License
-
-This project is open source and intended for ESP-IDF learning, IoT development, BLE provisioning, and weather API integration.
-
-
-https://drive.google.com/drive/folders/1ILlToPnGBnjLAOv5CfqYjuUL5mR0pnwP?usp=sharing
+- Touch input is wired to LVGL but no on-screen controls consume it yet (e.g. a settings
+  screen for Wi-Fi/location as an alternative to BLE).
+- `WEATHER_API_KEY` should be moved out of source control (see note above).
+- No BLE pairing/bonding is configured — the GATT characteristics are writable by any
+  connected device. Consider adding authentication if the device will be used somewhere
+  with untrusted BLE proximity.
+- The weather fetch interval is manual (BLE-triggered or on Wi-Fi reconnect) — there's no
+  periodic re-fetch timer yet if you want the display to refresh automatically over time.

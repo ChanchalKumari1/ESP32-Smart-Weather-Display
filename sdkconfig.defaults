@@ -1,0 +1,25 @@
+# ──────────────────────────────────────────────
+#  sdkconfig.defaults  –  CrowPanel 4.3" ESP-IDF v5.4
+# ──────────────────────────────────────────────
+
+# Flash
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_PARTITION_TABLE_SINGLE_APP=y
+
+# PSRAM  (CrowPanel 4.3" = Quad mode PSRAM, NOT Octal)
+CONFIG_ESP32S3_SPIRAM_SUPPORT=y
+CONFIG_SPIRAM_MODE_QUAD=y
+# CONFIG_SPIRAM_MODE_OCT is not set
+CONFIG_SPIRAM_SPEED_80M=y
+CONFIG_SPIRAM_IGNORE_NOTFOUND=y   # gracefully skip if PSRAM absent
+
+# CPU
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# LVGL via idf-component-manager – no extra config needed here
+
+# FreeRTOS tick
+CONFIG_FREERTOS_HZ=1000
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
